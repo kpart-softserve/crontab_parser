@@ -39,6 +39,17 @@ cronparser "*/15 0 1,15 * 1-5 /usr/bin/find"
 ```
 
 ## Running tests
+
+### Unit tests
+To run unit tests call
+
+```bash
+python tests/expression_test.py 
+```
+
+Now tested is only one method - there is no more methods to test :)
+
+### Integration tests
 To run integration tests simply call
 
 ```bash

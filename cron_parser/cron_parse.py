@@ -1,11 +1,16 @@
 from celery.schedules import crontab_parser
 
-def expression_parse(expression, max, min=0):
+def expression_parser(expression, max, min=0):
     result_list = []
     special_characters = ['*', '/', ',', '-']
 
     if not any(char in expression for char in special_characters):
-        result_list.append(expression)
+        if int(expression) > max:
+            raise ValueError
+        if int(expression) < min:
+            raise ValueError
+        
+        result_list.append(int(expression))
         return result_list
     
     if '/' in expression:
@@ -22,7 +27,7 @@ def expression_parse(expression, max, min=0):
         return result_list
     
     if '*' in expression:
-        if expression.count('*') != 1:
+        if len(expression) != 1:
             raise ValueError
         
         for x in range(min, max):
@@ -30,11 +35,17 @@ def expression_parse(expression, max, min=0):
         return result_list
     
     if ',' in expression:
+        if expression.startswith(','):
+            raise ValueError
+        if expression.endswith(','):
+            raise ValueError
+
         result_list = expression.split(',')
         if int(sorted(result_list)[len(result_list) - 1]) > max:
             raise ValueError
         if int(sorted(result_list)[0]) < min:
             raise ValueError
+        result_list = list(map(int, result_list))
         return result_list
     
     if '-' in expression:
@@ -46,7 +57,7 @@ def expression_parse(expression, max, min=0):
         for x in range(int(temp_range[0]), int(temp_range[1]) + 1):
             result_list.append(x)
 
-        if int(sorted(result_list)[len(result_list) - 1]) > max:
+        if int(sorted(result_list)[len(result_list) - 1]) >= max:
             raise ValueError
         if int(sorted(result_list)[0]) < min:
             raise ValueError
@@ -60,15 +71,15 @@ def no_dependency_cron_parse(cron_line):
         
         cron_dict = {}
         cron_dict["minute"] = sorted(
-            expression_parse(cron_line.split()[0], 60))
+            expression_parser(cron_line.split()[0], 60))
         cron_dict["hour"] = sorted(
-            expression_parse(cron_line.split()[1], 24))
+            expression_parser(cron_line.split()[1], 24))
         cron_dict["day of month"] = sorted(
-            expression_parse(cron_line.split()[2], 60, 1))
+            expression_parser(cron_line.split()[2], 60, 1))
         cron_dict["month"] = sorted(
-            expression_parse(cron_line.split()[3], 13, 1))
+            expression_parser(cron_line.split()[3], 13, 1))
         cron_dict["day of week"] = sorted(
-            expression_parse(cron_line.split()[4], 8, 1))
+            expression_parser(cron_line.split()[4], 8, 1))
         cron_dict["command"] = cron_line.split()[5]
 
         return cron_dict
