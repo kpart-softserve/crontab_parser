@@ -2,6 +2,8 @@
 
 ## Requirments
 * Python 3
+* Celery (pip requirement, locked in pipfile)
+* `For delevopent` autopep8 (pip requirement, locked in pipfile)
 
 All needed packages is provided by pipenv
 
