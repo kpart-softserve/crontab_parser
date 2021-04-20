@@ -7,5 +7,8 @@ setup(
    author='Konrad Partas',
    author_email='kpart@softserveinc.com',
    packages=['cron_parser'],
-   install_requires=['celery']
+   install_requires=['celery'],
+   entry_points = {
+        'console_scripts': ['cronparser=cron_parser.main:main_function'],
+    }
 )

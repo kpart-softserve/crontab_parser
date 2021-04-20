@@ -31,6 +31,11 @@ command /usr/bin/find
 python cron_parser.py "*/15 0 1,15 * 1-5 /usr/bin/find"
 ```
 
+Or, if package installed on host:
+```bash
+cronparser "*/15 0 1,15 * 1-5 /usr/bin/find"
+```
+
 ## Running tests
 To run integration tests simply call
 
@@ -40,7 +45,7 @@ To run integration tests simply call
 
 Tests returns 0 when all passed, return 1 when one failed - so its ready to integrate with CI/CD system.
 
-## Build whell (pip) package
+## Build wheel (pip) package
 To build package run:
 ```bash
 python setup.py bdist_wheel
